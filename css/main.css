@@ -1,0 +1,223 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+}
+
+#obi_send,
+#emoji_send,
+#oneGyou_send {
+    height: 25px;
+    width: 50px;
+    background-color: #988792;
+    color: white;
+    border-radius: 4px;
+}
+
+
+
+
+header {
+    height: 60px;
+    width: 100%;
+    background: #EC368D;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 3px dashed white;
+
+
+}
+
+header h1 {
+    font-size: xx-large;
+    color: white;
+    margin-top: 0;
+    padding: 0 20px;
+
+}
+
+.menu {
+    display: flex;
+}
+
+header p {
+    color: white;
+    margin: 15px;
+
+}
+
+
+
+.left_side {
+    height: 700px;
+    width: 25%;
+    background: #54F2F2;
+    margin: 0;
+    overflow: scroll;
+
+}
+
+.right_side {
+    height: 700px;
+    width: 45%;
+    background: #FDF5BF;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: scroll;
+
+}
+
+.right_side2 {
+    height: 700px;
+    width: 25%;
+    background: #FF5E5B;
+    overflow: scroll;
+    flex-direction: column;
+}
+
+.right_side3 {
+    height: 700px;
+    width: 5%;
+    background: #DCD6F7;
+    overflow: scroll;
+    text-align: center;
+}
+
+
+.box {
+    float: left;
+    border-right: 1px solid white;
+    display: flex;
+
+
+}
+
+.clear {
+    clear: left;
+}
+
+.write {
+    padding: 15px
+}
+
+.write_box {
+    padding-bottom: 30px;
+    border-bottom: 3px dashed white;
+    padding-top: 20px;
+}
+
+#show_write_long {
+    padding-top: 10px;
+    padding: 2px 30px;
+    background: rgb(59, 84, 211, 0.2);
+    font-size: 18px;
+    color: rgb(59, 84, 211);
+    border: 1px solid;
+    cursor: pointer;
+
+}
+
+
+.write p {
+    margin-bottom: 0;
+    padding: 5px;
+}
+
+.write_long input {
+    margin: 5px;
+    width: 75%;
+}
+
+.write textarea {
+    margin: 5px;
+    width: 80%;
+    height: 300px
+}
+
+.write_long button {
+    margin: 5px;
+    border: 0;
+    border-radius: 4px;
+    font-size: 20px;
+    width: 100px;
+    background-color: #80727B;
+    color: white;
+}
+
+.write_long button:hover {
+    background-color: #484045;
+}
+
+#oneGyou {
+    width: 75%;
+}
+
+#emoji_text {
+    font-size: 45px;
+    width: 50px;
+    height: 50px;
+}
+
+li {
+    list-style: none;
+}
+
+#output li {
+    margin: 10px;
+    width: 500px;
+    height: 150px;
+    background: rgb(154, 207, 154);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    padding: 10px;
+    font-size: xxx-large;
+
+}
+
+
+#output2 li {
+    background-color: #f5a8a6;
+    border-bottom: 3px solid white;
+}
+
+#output3 {
+    flex-direction: column;
+    font-size: 50px;
+}
+
+.name01 {
+    text-align: end;
+    font-size: 15px;
+}
+
+.title01 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.book01 {
+    font-size: 12px;
+}
+
+.time01 {
+    font-size: 12px;
+}
+
+footer {
+    bottom: 0;
+
+    height: 50px;
+    width: 100%;
+    background: rgb(106, 100, 95)
+}
+
+footer p {
+    margin: 0;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}

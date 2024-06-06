@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>読書感想記録</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>menu</h1>
+        <div class="menu">
+            <div>
+                <p>マイページ</p>
+            </div>
+            <div>
+                <p>検索欄</p>
+            </div>
+
+        </div>
+
+    </header>
+    <div class="box left_side">
+
+        <div class="write">
+            <div class="write_box write_obi">
+                <p>帯で書く</p>
+                <input id="obi_text" type="text" placeholder="大文字横書き">
+                <button id="obi_send">送信</button>
+            </div>
+
+            <div class="write_box">
+                <button id="show_write_long">長文で書く</button>
+                <div class="write_long" style=display:none>
+                    <input id="name" type="text" placeholder="ユーザー名">
+                    <input id="title" type="text" placeholder="タイトル">
+                    <textarea id="text" placeholder="感想"></textarea>
+                    <p>書籍名/著者名</p><input id="book" type="text">
+                    <br>
+                    <button id="send">send</button>
+                </div>
+            </div>
+            <div class="write_box">
+                <p>１行感想(100字) </p>
+                <input id="oneGyou" type="text" maxlength="100" placeholder="感想">
+                <button id="oneGyou_send">送信</button>
+            </div>
+            <div class="write_box">
+                <p>1Emoji感想</p>
+                <input id="emoji_text" type="text" maxlength="5" placeholder="♡">
+                <!-- <input id="book03" type="text" placeholder="書籍名or著者名"> -->
+                <button id="emoji_send">送信</button>
+            </div>
+        </div>
+    </div>
+    <div class="box right_side" id="output">
+    </div>
+    <div class="box right_side2" id="output2">
+    </div>
+    <div class="box right_side3" id="output3">
+    </div>
+    <div class="clear">
+
+    </div>
+    <footer>
+        <p>-OBI-</p>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- ページデザインの挙動 -->
+    <script>
+        $("#show_write_long").on("click", function () {
+            $('.write_long').toggle();
+        });
+    </script>
+
+    <!-- 下記からfirebase関連の挙動 -->
+    <script>
+        // 日時をいい感じの形式にする関数
+        function convertTimestampToDatetime(timestamp) {
+            const _d = timestamp ? new Date(timestamp * 1000) : new Date();
+            const Y = _d.getFullYear();
+            const m = (_d.getMonth() + 1).toString().padStart(2, '0');
+            const d = _d.getDate().toString().padStart(2, '0');
+            const H = _d.getHours().toString().padStart(2, '0');
+            const i = _d.getMinutes().toString().padStart(2, '0');
+            const s = _d.getSeconds().toString().padStart(2, '0');
+            return `${Y}/${m}/${d} ${H}:${i}:${s}`;
+        }
+    </script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            serverTimestamp,
+            query,
+            orderBy,
+            onSnapshot,
+
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            //   apiキー
+            authDomain: "readbooks-dbeb4.firebaseapp.com",
+            projectId: "readbooks-dbeb4",
+            storageBucket: "readbooks-dbeb4.appspot.com",
+            messagingSenderId: "282920381275",
+            appId: "1:282920381275:web:4982727d9ad6497255087e"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+
+        // sendボタンを押した時に送信
+
+        // 帯ボタン
+        $("#obi_send").on("click", function () {
+            const postData = {
+                obi_text: $("#obi_text").val(),
+                time: serverTimestamp(),
+            };
+            addDoc(collection(db, "obi"), postData);
+            $("#obi_text").val("");
+
+        });
+
+        // 長文感想ボタン
+        $("#send").on("click", function () {
+            const postData = {
+                name: $("#name").val(),
+                text: $("#text").val(),
+                title: $("#title").val(),
+                book: $("#book").val(),
+                time: serverTimestamp(),
+            };
+            addDoc(collection(db, "chat"), postData);
+            $("#text").val("");
+            $("#title").val("");
+            $("#book").val("");
+        });
+
+        // 1行感想ボタン
+        $("#oneGyou_send").on("click", function () {
+            const postData = {
+                oneGyou: $("#oneGyou").val()
+            };
+            addDoc(collection(db, "chat"), postData);
+            $("#oneGyou").val("");
+        });
+        // 絵文字ボタン
+        $("#emoji_send").on("click", function () {
+            const postData = {
+                emoji: $("#emoji_text").val(),
+                time: serverTimestamp(),
+            };
+            addDoc(collection(db, "emoji"), postData);
+            $("#emoji_text").val("");
+
+        });
+
+
+        // データに変更があった時に取得
+        // 長文の出力処理
+        const q = query(collection(db, "chat"), orderBy("time", "desc"));
+
+        onSnapshot(q, (querySnapshot) => {
+
+            const documents = [];
+            querySnapshot.docs.forEach(function (doc) {
+                const document = {
+                    id: doc.id,
+                    data: doc.data(),
+                };
+                documents.push(document);
+            });
+
+            // 長文出力
+            const htmlElements = [];
+            documents.forEach(function (document) {
+
+                htmlElements.push(
+                    `
+            <div class="long_thoughts">
+    <li id="${document.id}">
+        <p class="name01">${document.data.name
+                    } </p>
+        <p class="title01" >${document.data.title}</p>
+        <p class="text01">${document.data.text}</p>
+        <p class="book01">書籍:${document.data.book}</p>
+      <p class="time01">${convertTimestampToDatetime(document.data.time.seconds)}</p>
+    </li>
+    </div>
+    `);
+            });
+            $("#output2").html(htmlElements);
+
+        });
+
+
+
+        onSnapshot(query(collection(db, "obi"), orderBy("time", "desc")), (querySnapshot) => {
+
+            const obiDatas = [];
+            querySnapshot.docs.forEach(function (doc) {
+                const obiData = {
+                    id: doc.id,
+                    data: doc.data(),
+                };
+                obiDatas.push(obiData);
+            });
+
+            const htmlObi = [];
+            obiDatas.forEach(function (obiData) {
+                htmlObi.push(`
+    <li id="${obiData.id}">
+      <p id="obi_font">${obiData.data.obi_text}</p>
+    </li>
+  `);
+            });
+
+            $("#output").html(htmlObi);
+
+        });
+
+        onSnapshot(query(collection(db, "emoji"), orderBy("time", "desc")), (querySnapshot) => {
+
+            const emojiDatas = [];
+            querySnapshot.docs.forEach(function (doc) {
+                const emojiData = {
+                    id: doc.id,
+                    data: doc.data(),
+                };
+                emojiDatas.push(emojiData);
+            });
+
+            const htmlEmoji = [];
+            emojiDatas.forEach(function (emojiData) {
+                htmlEmoji.push(`
+    <li id="${emojiData.id}">
+      <p class="animate-bounce">${emojiData.data.emoji}</p>
+    </li>
+  `);
+            });
+
+            $("#output3").html(htmlEmoji);
+
+        });
+
+
+
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>
